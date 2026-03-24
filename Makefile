@@ -55,6 +55,10 @@ test: check-env
 	@$(YDB) -run ^SAFETST
 	@echo "==> Running TASKSTST..."
 	@$(YDB) -run ^TASKSTST
+	@echo "==> Running STRFNSTST..."
+	@$(YDB) -run ^STRFNSTST
+	@echo "==> Running CSVTST..."
+	@$(YDB) -run ^CSVTST
 	@echo ""
 	@echo "All suites passed."
 
