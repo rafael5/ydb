@@ -53,6 +53,8 @@ test: check-env
 	@$(YDB) -run ^GTREETST
 	@echo "==> Running SAFETST..."
 	@$(YDB) -run ^SAFETST
+	@echo "==> Running TASKSTST..."
+	@$(YDB) -run ^TASKSTST
 	@echo ""
 	@echo "All suites passed."
 
