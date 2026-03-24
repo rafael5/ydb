@@ -1,33 +1,35 @@
-HELLOTST        ; Test suite for hello.m
-        ; Uses the lightweight built-in test runner (see routines/tests/TESTRUN.m)
-        ; Run via:  make test
-        ;           ydb -run ^TESTRUN HELLOTST
+HELLOTST        ; Test suite for hello.m — run with: ydb -run ^HELLOTST
+        new pass,fail
+        do start^TESTRUN(.pass,.fail)
         ;
-        do ^TESTRUN("HELLOTST")
+        do tGreetWorld(.pass,.fail)
+        do tGreetName(.pass,.fail)
+        do tShoutUppercase(.pass,.fail)
+        do tShoutAlreadyUpper(.pass,.fail)
+        ;
+        do report^TESTRUN(pass,fail)
         quit
         ;
-; ---- Tests (each label starting with 't' is auto-discovered) ---------------
-        ;
-tGreetWorld     ;@TEST "greet() returns correct string for 'World'"
+tGreetWorld(pass,fail)  ;@TEST "greet() returns Hello, World!"
         new result
         set result=$$greet^hello("World")
-        do eq^TESTRUN(result,"Hello, World!","greet(World)")
+        do eq^TESTRUN(.pass,.fail,result,"Hello, World!","greet(World)")
         quit
         ;
-tGreetName      ;@TEST "greet() works with any name"
+tGreetName(pass,fail)   ;@TEST "greet() works with any name"
         new result
         set result=$$greet^hello("Alice")
-        do eq^TESTRUN(result,"Hello, Alice!","greet(Alice)")
+        do eq^TESTRUN(.pass,.fail,result,"Hello, Alice!","greet(Alice)")
         quit
         ;
-tShoutUppercase ;@TEST "shout() uppercases the name"
+tShoutUppercase(pass,fail)      ;@TEST "shout() uppercases the name"
         new result
         set result=$$shout^hello("alice")
-        do eq^TESTRUN(result,"HELLO, ALICE!","shout(alice)")
+        do eq^TESTRUN(.pass,.fail,result,"HELLO, ALICE!","shout(alice)")
         quit
         ;
-tShoutAlreadyUpper      ;@TEST "shout() handles already-uppercase name"
+tShoutAlreadyUpper(pass,fail)   ;@TEST "shout() handles already-uppercase input"
         new result
         set result=$$shout^hello("BOB")
-        do eq^TESTRUN(result,"HELLO, BOB!","shout(BOB)")
+        do eq^TESTRUN(.pass,.fail,result,"HELLO, BOB!","shout(BOB)")
         quit

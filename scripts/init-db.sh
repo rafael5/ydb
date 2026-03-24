@@ -25,14 +25,13 @@ echo "    GLD:      $GLD"
 echo "    Database: $DAT"
 echo ""
 
-# Source YottaDB env temporarily for this script
-source "$YDB_DIST/ydb_env_set" 2>/dev/null || true
-
 export ydb_dist="$YDB_DIST"
-export ydb_dir="$DATA_DIR"
 export ydb_gbldir="$GLD"
-export ydb_routines="$PROJECT_DIR/routines $PROJECT_DIR/routines/tests $YDB_DIST"
 export PATH="$YDB_DIST:$PATH"
+unset ydb_routines   # GDE doesn't need routines; avoids path-validation errors
+
+echo "==> Cleaning up any previous partial database files..."
+rm -f "$DATA_DIR"/db/*.dat "$DATA_DIR"/g/ydb.gld
 
 echo "==> Creating global directory..."
 cd "$DATA_DIR/g"

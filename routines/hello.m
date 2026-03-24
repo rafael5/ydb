@@ -15,4 +15,4 @@ greet(name)     ; Greet by name — called as: $$greet^hello("Alice")
         quit "Hello, "_name_"!"
         ;
 shout(name)     ; Shout a greeting — demonstrates string concatenation
-        quit "HELLO, "_ $ZCONVERT(name,"U") _"!"
+        quit "HELLO, "_$ZCONVERT(name,"U")_"!"

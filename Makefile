@@ -3,14 +3,16 @@
 #
 # Requires: YottaDB installed, .envrc sourced (direnv allow)
 
+SHELL := /bin/bash
+
 YDB_DIST := $(shell ls -d /usr/local/lib/yottadb/r* 2>/dev/null | sort -V | tail -1)
 YDB      := $(YDB_DIST)/ydb
 
-# YottaDB environment
+# YottaDB environment — ydb_routines is owned by .envrc (direnv) to handle
+# optional paths like routines/munit gracefully. Makefile sets the rest.
 export ydb_dist   := $(YDB_DIST)
 export ydb_dir    := $(HOME)/data/ydb
 export ydb_gbldir := $(HOME)/data/ydb/g/ydb.gld
-export ydb_routines := $(CURDIR)/routines $(CURDIR)/routines/tests $(CURDIR)/routines/munit $(YDB_DIST)
 
 .PHONY: help test test-all watch install install-munit push check-env
 
@@ -39,7 +41,7 @@ install-munit:
 
 test: check-env
 	@echo "==> Running HELLOTST..."
-	@$(YDB) -run ^TESTRUN HELLOTST
+	@$(YDB) -run ^HELLOTST
 	@echo ""
 	@echo "All suites passed."
 

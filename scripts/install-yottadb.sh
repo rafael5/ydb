@@ -7,12 +7,14 @@
 set -euo pipefail
 
 echo "==> Downloading official YottaDB installer..."
-curl -fsSL https://gitlab.com/YottaDB/DB/YDB/raw/master/sr_unix/ydbinstall.sh -o /tmp/ydbinstall.sh
+TMPFILE=$(mktemp /tmp/ydbinstall.XXXXXX.sh)
+curl -fsSL https://gitlab.com/YottaDB/DB/YDB/raw/master/sr_unix/ydbinstall.sh -o "$TMPFILE"
 
 echo "==> Running installer (UTF-8 support enabled)..."
 # --utf8 default: enables UTF-8 locale support (recommended)
 # --overwrite-existing: safe for re-runs
-bash /tmp/ydbinstall.sh --utf8 default
+bash "$TMPFILE" --utf8 default --force-install
+rm -f "$TMPFILE"
 
 echo "==> Finding installation path..."
 YDB_DIST=$(ls -d /usr/local/lib/yottadb/r* 2>/dev/null | sort -V | tail -1)
@@ -23,7 +25,7 @@ fi
 echo "    Installed at: $YDB_DIST"
 
 echo "==> Verifying installation..."
-"$YDB_DIST/ydb" --version
+"$YDB_DIST/ydb" -run %xcmd 'write $ZYRELEASE,!'
 
 echo ""
 echo "SUCCESS: YottaDB installed."
