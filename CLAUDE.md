@@ -99,6 +99,77 @@ write $$greet^hello("World"),!
 halt                ; exit
 ```
 
+## Code Style — "Lowercase Pythonic MUMPS"
+
+Rafael's preferred style for this project. Less shouting, more readable.
+
+### Labels
+```mumps
+; Public entry points — ALLCAPS (matches routine/file name convention)
+MYROUTINE   ; public API
+
+; Private sub-labels — lowercase (like Python functions)
+show(gname)
+walk(gname,depth,prefix)
+mkref(gname,depth,curKey)
+```
+
+### No spaces in expressions
+```mumps
+; WRONG — parser stops at space around _
+quit "Hello, "_ name _"!"
+
+; RIGHT
+quit "Hello, "_name_"!"
+```
+
+### Vertical spacing — blank comment lines between sections
+```mumps
+doSomething(x)
+        new result
+        set result=x+1
+        ;
+        if result>10 do handleBig(result)
+        quit result
+```
+
+### if/else — use do blocks for clarity
+```mumps
+; prefer explicit do blocks over inline
+if nextKey'="" do
+.  set connector="├── "
+.  set childPrefix=prefix_"│   "
+else  do
+.  set connector="└── "
+.  set childPrefix=prefix_"    "
+```
+
+### Dynamic scoping — used intentionally
+```mumps
+; Variables new'd in a parent label are visible to called sub-labels.
+; Document when you rely on this (e.g., path() in gtree.m).
+show(gname)
+        new path        ; inherited by walk() and mkref() below
+        do walk(gname,1,"")
+        quit
+```
+
+### $GET over direct read — avoid undefined variable errors
+```mumps
+; WRONG — errors if node doesn't exist
+set x=^myGlobal("key")
+
+; RIGHT
+set x=$GET(^myGlobal("key"))          ; returns "" if missing
+set x=$GET(^myGlobal("key"),"default") ; returns "default" if missing
+```
+
+### Naming
+- Routines (filenames): `ALLCAPS.m` — e.g. `HELLOTST.m`, `GLOBALTST.m`
+- Application routines: `lowercase.m` — e.g. `hello.m`, `gtree.m`, `globals.m`
+- Test suites: `ROUTINENAMETST.m`
+- Labels: lowercase for private, ALLCAPS only for public entry points
+
 ## Skills available
 See `~/claude/skills/` for reusable skill definitions.
 MUMPS knowledge skill will grow here as the project develops.

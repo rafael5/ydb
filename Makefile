@@ -8,11 +8,16 @@ SHELL := /bin/bash
 YDB_DIST := $(shell ls -d /usr/local/lib/yottadb/r* 2>/dev/null | sort -V | tail -1)
 YDB      := $(YDB_DIST)/ydb
 
-# YottaDB environment — ydb_routines is owned by .envrc (direnv) to handle
-# optional paths like routines/munit gracefully. Makefile sets the rest.
+# YottaDB environment
 export ydb_dist   := $(YDB_DIST)
 export ydb_dir    := $(HOME)/data/ydb
 export ydb_gbldir := $(HOME)/data/ydb/g/ydb.gld
+# ydb_routines: include munit only if installed; $(wildcard) returns "" if missing
+export ydb_routines := $(strip \
+    $(CURDIR)/routines \
+    $(CURDIR)/routines/tests \
+    $(wildcard $(CURDIR)/routines/munit) \
+    $(YDB_DIST))
 
 .PHONY: help test test-all watch install install-munit push check-env
 
@@ -42,14 +47,14 @@ install-munit:
 test: check-env
 	@echo "==> Running HELLOTST..."
 	@$(YDB) -run ^HELLOTST
+	@echo "==> Running GLOBALTST..."
+	@$(YDB) -run ^GLOBALTST
+	@echo "==> Running GTREETST..."
+	@$(YDB) -run ^GTREETST
+	@echo "==> Running SAFETST..."
+	@$(YDB) -run ^SAFETST
 	@echo ""
 	@echo "All suites passed."
-
-# Add new test suites here as you create them:
-# test-all: check-env
-# 	$(YDB) -run ^TESTRUN HELLOTST
-# 	$(YDB) -run ^TESTRUN MYSUITETST
-# 	@echo "All suites passed."
 
 watch:
 	@command -v entr >/dev/null 2>&1 || { echo "Install entr: sudo apt install entr"; exit 1; }
