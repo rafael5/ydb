@@ -45,7 +45,7 @@ echo "==> Creating database..."
 "$YDB_DIST/mupip" create
 
 echo "==> Verifying..."
-"$YDB_DIST/ydb" -run %xcmd 'set ^hello="world" write ^hello,! halt'
+"$YDB_DIST/ydb" -run %XCMD 'set ^hello="world" write ^hello,!'
 
 echo ""
 echo "SUCCESS: Database initialized at $DAT"

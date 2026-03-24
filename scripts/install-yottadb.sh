@@ -25,7 +25,7 @@ fi
 echo "    Installed at: $YDB_DIST"
 
 echo "==> Verifying installation..."
-"$YDB_DIST/ydb" -run %xcmd 'write $ZYRELEASE,!'
+"$YDB_DIST/ydb" -run %XCMD 'write $ZYRELEASE,!'
 
 echo ""
 echo "SUCCESS: YottaDB installed."

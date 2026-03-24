@@ -19,13 +19,14 @@ export ydb_routines := $(strip \
     $(wildcard $(CURDIR)/routines/munit) \
     $(YDB_DIST))
 
-.PHONY: help test test-all watch install install-munit push check-env
+.PHONY: help test watch lint install install-munit push check-env
 
 help:
 	@echo "YottaDB/MUMPS development targets:"
 	@echo "  make install       Install YottaDB (needs sudo)"
 	@echo "  make install-munit Install M-Unit testing framework"
 	@echo "  make test          Run all test suites"
+	@echo "  make lint          Syntax-check all routines"
 	@echo "  make watch         Re-run tests on file change (requires entr)"
 	@echo "  make push          Commit and push to GitHub"
 	@echo "  make check-env     Verify environment is correctly configured"
@@ -61,6 +62,9 @@ test: check-env
 	@$(YDB) -run ^CSVTST
 	@echo ""
 	@echo "All suites passed."
+
+lint:
+	@bash bin/ycheck --all
 
 watch:
 	@command -v entr >/dev/null 2>&1 || { echo "Install entr: sudo apt install entr"; exit 1; }
