@@ -1,0 +1,104 @@
+# MUMPS / YottaDB — Claude Context
+
+## Environment
+- YottaDB (GT.M-compatible MUMPS runtime), installed at `/usr/local/lib/yottadb/rXXX/`
+- Database files: `~/data/ydb/` (not in git)
+- Routines (source): `~/projects/ydb/routines/` (git-controlled)
+- Direnv: `.envrc` sets all `ydb_*` env vars automatically on `cd`
+
+## MUMPS Language Basics (for Claude)
+
+### Syntax rules
+- **Labels** start in column 1, no indentation
+- **Code** is indented with one space (or tab) after the label
+- **Comments** start with `;`
+- **Newline in output**: `!` in a WRITE statement
+- **String concatenation**: `_` operator  →  `"Hello, "_name_"!"`
+- **No type system**: everything is a string; numeric context auto-converts
+- **Variables are local by default**; globals start with `^`
+
+### Key commands
+```mumps
+write "text",!          ; print with newline
+set x=42                ; assignment
+new x                   ; declare local variable (isolates from caller)
+quit                    ; return from routine (no value)
+quit value              ; return value from function
+if cond  do label       ; conditional
+for i=1:1:10  do label  ; loop
+do label^routine        ; call a subroutine
+$$func^routine(args)    ; call a function and get its return value
+```
+
+### Globals (persistent database storage)
+```mumps
+set ^MyGlobal("key")="value"    ; store
+set x=^MyGlobal("key")          ; retrieve
+kill ^MyGlobal("key")           ; delete
+```
+
+### Intrinsic functions (commonly used)
+```mumps
+$LENGTH(str)            ; string length
+$PIECE(str,delim,n)     ; nth piece of delimited string
+$EXTRACT(str,start,end) ; substring
+$ZCONVERT(str,"U")      ; uppercase
+$ZCONVERT(str,"L")      ; lowercase
+$ORDER(^Global(key))    ; iterate global subscripts
+$DATA(^Global(key))     ; check if node exists (0=no, 1=yes, 10=has children, 11=both)
+```
+
+### MUMPS routine file naming
+- File name = routine name + `.m` extension
+- Routine name = label at top of file
+- Names are case-sensitive; convention is ALLCAPS for public routines, mixed for private
+
+## Testing Setup
+
+### Test runner (no external deps)
+`routines/tests/TESTRUN.m` — lightweight runner that discovers `tXxx` labels.
+
+Run a suite:
+```bash
+ydb -run ^TESTRUN HELLOTST
+# or
+make test
+```
+
+### M-Unit (%ut) — standard framework (install separately)
+```bash
+bash scripts/install-munit.sh    # clones OSEHRA/M-Unit into routines/munit/
+```
+Once installed, test routines can use `do assertEquals^%ut(actual,expected,"msg")`.
+
+### TDD workflow
+1. Create `routines/MYROUTINE.m` with stub functions
+2. Create `routines/tests/MYROUTINETST.m` with `tXxx` tests
+3. Add the suite to `make test` in Makefile
+4. Run `make watch` for continuous test feedback
+
+## Project Conventions
+- Source: `routines/*.m` — application logic
+- Tests:  `routines/tests/*TST.m` — naming convention: `ROUTINENAME` + `TST`
+- Helpers: `routines/tests/TESTRUN.m` — test infrastructure (don't edit)
+- Data paths:
+  - Database: `~/data/ydb/db/ydb.dat`
+  - Global directory: `~/data/ydb/g/ydb.gld`
+
+## Running YottaDB interactively
+```bash
+ydb                         # interactive MUMPS prompt (GTM>)
+ydb -run ^hello             # run routine directly
+ydb -run ^TESTRUN HELLOTST  # run a test suite
+```
+
+At the `YDB>` prompt:
+```mumps
+do ^hello           ; run hello routine
+write $$greet^hello("World"),!
+halt                ; exit
+```
+
+## Skills available
+See `~/claude/skills/` for reusable skill definitions.
+MUMPS knowledge skill will grow here as the project develops.

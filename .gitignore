@@ -1,0 +1,24 @@
+# YottaDB database files — live in ~/data/ydb/, never committed
+*.dat
+*.gld
+*.mjl
+*.backup
+*.zwr
+
+# YottaDB object files (compiled routines)
+*.o
+
+# YottaDB lock and journal files
+*.lock
+*.jnl
+
+# M-Unit (fetched via scripts/install-munit.sh, not committed)
+routines/munit/
+
+# Environment
+.env
+
+# Editor
+*.swp
+*~
+.DS_Store
