@@ -60,6 +60,10 @@ test: check-env
 	@$(YDB) -run ^STRFNSTST
 	@echo "==> Running CSVTST..."
 	@$(YDB) -run ^CSVTST
+	@echo "==> Running VALIDATETST..."
+	@$(YDB) -run ^VALIDATETST
+	@echo "==> Running JSONTST..."
+	@$(YDB) -run ^JSONTST
 	@echo ""
 	@echo "All suites passed."
 
