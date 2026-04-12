@@ -170,6 +170,6 @@ set x=$GET(^myGlobal("key"),"default") ; returns "default" if missing
 - Test suites: `ROUTINENAMETST.m`
 - Labels: lowercase for private, ALLCAPS only for public entry points
 
-## Skills available
-See `~/claude/skills/` for reusable skill definitions.
-MUMPS knowledge skill will grow here as the project develops.
+## Skills
+- `~/claude/skills/mumps-language/` — MUMPS/M language reference (syntax, builtins, gotchas)
+- `~/claude/skills/ydb-library/` — ydb project library and shell tool reference
